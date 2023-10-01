@@ -8,11 +8,11 @@ output:
     toc_depth : 2
 ---
 
-```{r import function}
+```{r import_function}
 library(tidyverse)
 ```
 
-```{r input_data_pols, message = FALSE}
+```{r input_data_pols}
 pols_df = read_csv("pols-month.csv") |> 
   janitor::clean_names() |> 
   separate(mon, "-",into = c("year","month","day")) |> 
@@ -34,17 +34,26 @@ pols_df = read_csv("pols-month.csv") |>
   mutate(president = prez_dem +prez_gop) |> 
   select(-prez_gop,-day,-prez_dem)
 
-```
-```{r input_data_umploy, message=FALSE}
-
-umploy_df = read_csv("unemployment.csv") |> 
-  janitor::clean_names()
+pols_df|> head()
 
 ```
 
 ```{r input_data_snp,message=FALSE}
 snp_df = read_csv("snp.csv") |> 
-  janitor::clean_names()
+  janitor::clean_names() |> 
+  separate(date,"/",into=c("month","day","year")) |> 
+  select(year,month,close)
 ```
+
+```{r input_data_umploy, message=FALSE}
+umploy_df = read_csv("unemployment.csv") |> 
+  janitor::clean_names() |> 
+  pivot_longer(jan:dec,
+               names_to = "month",
+               values_to = "umploy")
+
+```
+
+
 
 
