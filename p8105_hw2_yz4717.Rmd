@@ -8,36 +8,41 @@ output:
     toc_depth : 2
 ---
 
-```{r}
+```{r import function}
 library(tidyverse)
 ```
 
-```{r input_data}
+```{r input_data_pols, message = FALSE}
 pols_df = read_csv("pols-month.csv") |> 
   janitor::clean_names() |> 
   separate(mon, "-",into = c("year","month","day")) |> 
   mutate(
-    month = as.character(month),
     month = case_match(
       month, 
-      month = "01" ~ "Jan",
-      month = "02" ~ "Feb",
-      month = "03" ~ "Mar",
-      month = "04" ~ "Apr",
-      month = "05" ~ "May",
-      month = "06" ~ "Jun",
-      month = "07" ~ "Jul",
-      month = "08" ~ "Aug",
-      month = "09" ~ "Sep",
-      month = "10" ~ "Oct", 
-      month = "11" ~ "Nov", 
-      month = "12" ~ "Dec",
-    )
-  )
+      "01" ~ "Jan",
+      "02" ~ "Feb",
+      "03" ~ "Mar",
+      "04" ~ "Apr",
+      "05" ~ "May",
+      "06" ~ "Jun",
+      "07" ~ "Jul",
+      "08" ~ "Aug",
+      "09" ~ "Sep",
+      "10" ~ "Oct", 
+      "11" ~ "Nov", 
+      "12" ~ "Dec")) |> 
+  mutate(president = prez_dem +prez_gop) |> 
+  select(-prez_gop,-day,-prez_dem)
+
+```
+```{r input_data_umploy, message=FALSE}
 
 umploy_df = read_csv("unemployment.csv") |> 
   janitor::clean_names()
 
+```
+
+```{r input_data_snp,message=FALSE}
 snp_df = read_csv("snp.csv") |> 
   janitor::clean_names()
 ```
