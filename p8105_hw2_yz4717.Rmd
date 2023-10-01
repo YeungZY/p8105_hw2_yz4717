@@ -1,0 +1,45 @@
+---
+title: "Homework2"
+author: "Yang Zhao - yz4717"
+date: "2023-09-30"
+output: 
+  github_document:
+    toc : True
+    toc_depth : 2
+---
+
+```{r}
+library(tidyverse)
+```
+
+```{r input_data}
+pols_df = read_csv("pols-month.csv") |> 
+  janitor::clean_names() |> 
+  separate(mon, "-",into = c("year","month","day")) |> 
+  mutate(
+    month = as.character(month),
+    month = case_match(
+      month, 
+      month = "01" ~ "Jan",
+      month = "02" ~ "Feb",
+      month = "03" ~ "Mar",
+      month = "04" ~ "Apr",
+      month = "05" ~ "May",
+      month = "06" ~ "Jun",
+      month = "07" ~ "Jul",
+      month = "08" ~ "Aug",
+      month = "09" ~ "Sep",
+      month = "10" ~ "Oct", 
+      month = "11" ~ "Nov", 
+      month = "12" ~ "Dec",
+    )
+  )
+
+umploy_df = read_csv("unemployment.csv") |> 
+  janitor::clean_names()
+
+snp_df = read_csv("snp.csv") |> 
+  janitor::clean_names()
+```
+
+
