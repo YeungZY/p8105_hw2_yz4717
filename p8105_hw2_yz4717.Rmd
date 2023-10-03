@@ -8,14 +8,16 @@ output:
     toc_depth : 2
 ---
 
+First of all, I import all the needed packages into the environment and set message = FALSE to avoid receiving the unneccessary messages.
+
 ```{r import_function, message=FALSE}
 library(tidyverse)
 library(readxl)
 ```
 
-## Question 1
+# Question 1
 
-```{r input_data_pols}
+```{r Q1_input_pols}
 pols_df = read_csv("pols-month.csv") |> 
   janitor::clean_names() |> 
   separate(mon, "-",into = c("year","month","day")) |> 
@@ -45,7 +47,7 @@ pols_df|> head()
 This data frame's size is `r nrow(pols_df)` * `r ncol(pols_df)`
 
 
-```{r input_data_snp,message=FALSE}
+```{r Q1_input_snp,message=FALSE}
 
 
 snp_df = read_csv("snp.csv",
@@ -66,7 +68,7 @@ snp_df |> head()
 ```
 
 
-```{r input_data_umploy, message=FALSE}
+```{r Q1_input_umploy, message=FALSE}
 umploy_df = read_csv("unemployment.csv") |> 
   janitor::clean_names() |> 
   pivot_longer(jan:dec,
@@ -77,7 +79,7 @@ umploy_df |> head()
 ```
 
 
-```{r merging_df_Q1}
+```{r Q1_merging_df_Q1}
 pols_df$year = as.double(pols_df$year)
 snp_df$year = as.double(snp_df$year)
 
@@ -89,7 +91,7 @@ merged_df |> head()
 ```
 
 
-## Question 2
+# Question 2
 ```{r Q2_input_mrt}
 
 mrt_df = read_excel(
@@ -122,8 +124,8 @@ proft_df = read_excel(
 head(proft_df)
 ```
 
-
 In professor's collection data, the total weight of Professor can be calculated by summing up all the weight. So its total weight is `r sum(pull(proft_df,weight_tons))` 
+
 ```{r Q2_input_gwy}
 
 gwyt_df = read_excel(
@@ -143,7 +145,7 @@ head(gwyt_df)
 
 The total collection of cigarette butts collected by Gwynnda in July of 2021 is accounts for`r sum(head(gwyt_df,5)$cigarette_butts)`
 
-```{r q2_merged}
+```{r Q2_merged}
 q2_merged = bind_rows(gwyt_df,mrt_df,proft_df) |> 
   separate(date,"-",into = c("year1","month1","day")) |> 
   select(-year1,-month1) |> 
@@ -153,9 +155,9 @@ q2_merged = bind_rows(gwyt_df,mrt_df,proft_df) |>
 head(q2_merged)
 ```
 
-## Question 3
+# Question 3
 
-```{r}
+```{r Q3_inut_baseline}
 base_df = read_csv("MCI_baseline.csv",skip = 1) |> 
   janitor::clean_names() |> 
   mutate(sex = case_match(sex,
@@ -171,8 +173,9 @@ base_df = read_csv("MCI_baseline.csv",skip = 1) |>
 head(base_df)
 ```
 
+There are some definitions above the whole table in the data of **MCI_baseline**. To get 
 
-```{r, message=FALSE}
+```{r Q3_input_amyloid, message=FALSE}
 amy_df = read_csv("mci_amyloid.csv",skip = 1) |> 
   janitor::clean_names() |> 
   rename("id" = "study_id") |> 
@@ -192,7 +195,7 @@ amy_df = read_csv("mci_amyloid.csv",skip = 1) |>
 
 In the data of **amyloid**, we can see a definition is being displayed on the top of document. To make a more tidier version of data frame, we need to skip the first row of this data. After that, I converted all the variables' name into lower case and use "rename()" function to rename the variable "study_id". Then, I reshape the provided data frame from a wider format to a longer format.To get a tidire version of given data, I also change the expression of the specific time node.
 
-```{r}
+```{r Q3_combine_data}
 q3_only1 = anti_join(base_df,amy_df, by= "id")
 q3_only2 = anti_join(amy_df,base_df, by= "id")
 q3_merged_df = inner_join(base_df,amy_df,by = "id")
