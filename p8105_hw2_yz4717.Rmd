@@ -52,10 +52,15 @@ snp_df = read_csv("snp.csv",
                   col_types = cols(Date = col_date(format = "%m/%d/%y"))) |> 
   janitor::clean_names() |> 
   separate(date,"/",into=c("month","day","year"))|> 
-  select(year,month,close) |> 
+  select(year,month,close)
+
+snp_df$year = as.numeric(snp_df$year)
+
+snp_df |> 
   mutate(
-    year = if_else(year<=15 , year+2000,year+1900)
-  )
+    year = ifelse(year<=15 ,year+2000,year+1900)
+  ) |> 
+  arrange(year,month)
 
 ```
 
@@ -97,8 +102,6 @@ mrt_df = read_excel(
          wheel = c("mr"))|> 
   relocate(wheel,dumpster,year,month)
 
-  # select(-glass_bottles,-grocery_bags,-chip_bags,-sports_balls)
-
 mrt_df$year = as.double(mrt_df$year)
 
 ```
@@ -115,12 +118,12 @@ proft_df = read_excel(
          wheel = c("prof"))|> 
   relocate(wheel,dumpster,year,month)
 
-  # select(-glass_bottles,-grocery_bags,-chip_bags)
 
 head(proft_df)
 ```
 
 
+In professor's collection data, the total weight of Professor can be calculated by summing up all the weight. So its total weight is `r sum(pull(proft_df,weight_tons))` 
 ```{r Q2_input_gwy}
 
 gwyt_df = read_excel(
@@ -133,11 +136,12 @@ gwyt_df = read_excel(
          wheel = c("gwy"))|> 
   relocate(wheel,dumpster,year,month) 
 
-  # select(-plastic_bags)
 
 head(gwyt_df)
 
 ```
+
+The total collection of cigarette butts collected by Gwynnda in July of 2021 is accounts for`r sum(head(gwyt_df,5)$cigarette_butts)`
 
 ```{r q2_merged}
 q2_merged = bind_rows(gwyt_df,mrt_df,proft_df) |> 
@@ -160,7 +164,7 @@ base_df = read_csv("MCI_baseline.csv",skip = 1) |>
          apoe4 = case_match(apoe4,
                             1~"carrier",
                             0~"non_carrier")) |> 
-  filter(current_age <age_at_onset | 
+  filter(current_age < age_at_onset | 
            age_at_onset==".") |> 
   mutate(age_at_onset = ifelse(age_at_onset == ".", NA, age_at_onset))
 ```
@@ -182,9 +186,15 @@ amy_df = read_csv("mci_amyloid.csv",skip = 1) |>
     "time_8"~8
   ))
 
-q3_only1 = anti_join(base_df,amy_df)
-q3_only2 = anti_join(amy_df,base_df)
+```
+
+
+```{r}
+q3_only1 = anti_join(base_df,amy_df, by= "id")
+q3_only2 = anti_join(amy_df,base_df, by= "id")
 q3_merged_df = inner_join(base_df,amy_df,by = "id")
 ```
 
+In the data of **amyloid**, we can see a definition is being displayed on the top of document. To make a more tidier version of data frame, we need to skip the first row of this data. After that, I converted all the variables'name into lower case and use "rename()" function to rename the variable "study_id". Then, I reshape the provided data frame from a wider format to a longer format.
+The first result of "anti_join" will provide a data frame containing all the rows from **base_df** that do not have matching rows in **amy_df** based on the specified columns used for comparison, and vice versa, the scond one will provide a data frame containing all the rows from **amy_df** that do not have matching rows in **base_df** based on the specified columns used for comparison.
 `r sum(base_df$sex =="female" & base_df$apoe4 == "carrier")/sum(base_df$sex == "female")`
