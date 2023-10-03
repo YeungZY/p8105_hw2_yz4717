@@ -48,13 +48,15 @@ This data frame's size is `r nrow(pols_df)` * `r ncol(pols_df)`
 ```{r input_data_snp,message=FALSE}
 
 
-snp_df = read_csv("snp.csv") |> 
+snp_df = read_csv("snp.csv",
+                  col_types = cols(Date = col_date(format = "%m/%d/%y"))) |> 
   janitor::clean_names() |> 
   separate(date,"/",into=c("month","day","year"))|> 
-  arrange(year,month) |> 
-  select(year,month,close)
+  select(year,month,close) |> 
+  mutate(
+    year = if_else(year<=15 , year+2000,year+1900)
+  )
 
-snp_df$year = as.Date(snp_df$year,format = "%y",by = "decreasing")
 ```
 
 ## ??????
@@ -86,15 +88,16 @@ merged_df = pols_df |>
 ```{r Q2_input_mrt}
 
 mrt_df = read_excel(
-  "202207 Trash Wheel Collection Data.xlsx",
+    "202309 Trash Wheel Collection Data.xlsx",
   cell_cols("A:N"),
   sheet = "Mr. Trash Wheel") |> 
   janitor::clean_names() |> 
   drop_na(dumpster) |> 
   mutate(homes_powered = weight_tons*500/30,
          wheel = c("mr"))|> 
-  relocate(wheel,dumpster,year,month) |> 
-  select(-glass_bottles,-grocery_bags,-chip_bags,-sports_balls)
+  relocate(wheel,dumpster,year,month)
+
+  # select(-glass_bottles,-grocery_bags,-chip_bags,-sports_balls)
 
 mrt_df$year = as.double(mrt_df$year)
 
@@ -103,47 +106,85 @@ mrt_df$year = as.double(mrt_df$year)
 ```{r Q2_input_prof}
 
 proft_df = read_excel(
-  "202207 Trash Wheel Collection Data.xlsx",
+  "202309 Trash Wheel Collection Data.xlsx",
   range = cell_cols("A:M"),
   sheet = "Professor Trash Wheel") |> 
   janitor::clean_names() |> 
   drop_na(dumpster) |> 
   mutate(homes_powered = weight_tons*500/30,
          wheel = c("prof"))|> 
-  relocate(wheel,dumpster,year,month) |> 
-  select(-glass_bottles,-grocery_bags,-chip_bags)
+  relocate(wheel,dumpster,year,month)
 
+  # select(-glass_bottles,-grocery_bags,-chip_bags)
+
+head(proft_df)
 ```
 
 
 ```{r Q2_input_gwy}
 
 gwyt_df = read_excel(
-  "202207 Trash Wheel Collection Data.xlsx",
+  "202309 Trash Wheel Collection Data.xlsx",
   range = cell_cols("A:K"),
   sheet = "Gwynnda Trash Wheel") |> 
   janitor::clean_names() |> 
   drop_na(dumpster) |> 
   mutate(homes_powered = weight_tons*500/30,
          wheel = c("gwy"))|> 
-  relocate(wheel,dumpster,year,month) |> 
-  select(-plastic_bags)
+  relocate(wheel,dumpster,year,month) 
+
+  # select(-plastic_bags)
+
+head(gwyt_df)
 
 ```
 
 ```{r q2_merged}
-q2_merged = rbind(gwyt_df,mrt_df,proft_df) |> 
+q2_merged = bind_rows(gwyt_df,mrt_df,proft_df) |> 
   separate(date,"-",into = c("year1","month1","day")) |> 
   select(-year1,-month1) |> 
   relocate(year,month,day) |> 
   arrange(year,month,day)
+
+head(q2_merged)
 ```
 
 ##Question 3
 
-```{r, message=FALSE}
-amy_df = read_csv("mci_amyloid.csv")
-
-base_df = read_csv("MCI_baseline.csv")
+```{r}
+base_df = read_csv("MCI_baseline.csv",skip = 1) |> 
+  janitor::clean_names() |> 
+  mutate(sex = case_match(sex,
+                          1~"male",
+                          0~"female"),
+         apoe4 = case_match(apoe4,
+                            1~"carrier",
+                            0~"non_carrier")) |> 
+  filter(current_age <age_at_onset | 
+           age_at_onset==".") |> 
+  mutate(age_at_onset = ifelse(age_at_onset == ".", NA, age_at_onset))
 ```
 
+
+```{r, message=FALSE}
+amy_df = read_csv("mci_amyloid.csv",skip = 1) |> 
+  janitor::clean_names() |> 
+  rename("id" = "study_id") |> 
+  pivot_longer(baseline:time_8,
+               names_to = "time",
+               values_to = "value") |> 
+  mutate(time = case_match(
+    time,
+    "baseline"~0,
+    "time_2"~2,
+    "time_4"~4,
+    "time_6"~6,
+    "time_8"~8
+  ))
+
+q3_only1 = anti_join(base_df,amy_df)
+q3_only2 = anti_join(amy_df,base_df)
+q3_merged_df = inner_join(base_df,amy_df,by = "id")
+```
+
+`r sum(base_df$sex =="female" & base_df$apoe4 == "carrier")/sum(base_df$sex == "female")`
