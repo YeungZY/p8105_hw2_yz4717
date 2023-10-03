@@ -70,7 +70,7 @@ umploy_df = read_csv("unemployment.csv") |>
 ```
 
 
-```{r}
+```{r merging_df_Q1}
 pols_df$year = as.double(pols_df$year)
 snp_df$year = as.double(snp_df$year)
 
@@ -83,7 +83,8 @@ merged_df = pols_df |>
 
 
 ## Question 2
-```{r input_mrt}
+```{r Q2_input_mrt}
+
 mrt_df = read_excel(
   "202207 Trash Wheel Collection Data.xlsx",
   cell_cols("A:N"),
@@ -95,9 +96,10 @@ mrt_df = read_excel(
   relocate(wheel,dumpster,year,month) 
 
 range(pull(mrt_df,year))
+
 ```
 
-```{r input_prof}
+```{r Q2_input_prof}
 
 proft_df = read_excel(
   "202207 Trash Wheel Collection Data.xlsx",
@@ -114,7 +116,7 @@ range(pull(proft_df,year))
 ```
 
 
-```{r input_gwy}
+```{r Q2_input_gwy}
 
 gwyt_df = read_excel(
   "202207 Trash Wheel Collection Data.xlsx",
