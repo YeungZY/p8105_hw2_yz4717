@@ -10,7 +10,10 @@ output:
 
 ```{r import_function}
 library(tidyverse)
+library(readxl)
 ```
+
+## Question 1
 
 ```{r input_data_pols}
 pols_df = read_csv("pols-month.csv") |> 
@@ -19,31 +22,43 @@ pols_df = read_csv("pols-month.csv") |>
   mutate(
     month = case_match(
       month, 
-      "01" ~ "Jan",
-      "02" ~ "Feb",
-      "03" ~ "Mar",
-      "04" ~ "Apr",
-      "05" ~ "May",
-      "06" ~ "Jun",
-      "07" ~ "Jul",
-      "08" ~ "Aug",
-      "09" ~ "Sep",
-      "10" ~ "Oct", 
-      "11" ~ "Nov", 
-      "12" ~ "Dec")) |> 
-  mutate(president = prez_dem +prez_gop) |> 
+      "01" ~ "jan",
+      "02" ~ "feb",
+      "03" ~ "mar",
+      "04" ~ "apr",
+      "05" ~ "may",
+      "06" ~ "jun",
+      "07" ~ "jul",
+      "08" ~ "aug",
+      "09" ~ "sep",
+      "10" ~ "oct", 
+      "11" ~ "nov", 
+      "12" ~ "dec")) |> 
+  mutate(president = recode(
+    prez_gop, "0" = "dem",
+    "1" = "gop", "2" = "gop")) |> 
   select(-prez_gop,-day,-prez_dem)
 
 pols_df|> head()
 
 ```
+This data frame's size is `r nrow(pols_df)` * `r ncol(pols_df)`
+
 
 ```{r input_data_snp,message=FALSE}
+
+
 snp_df = read_csv("snp.csv") |> 
   janitor::clean_names() |> 
-  separate(date,"/",into=c("month","day","year")) |> 
+  separate(date,"/",into=c("month","day","year"))|> 
+  arrange(year,month) |> 
   select(year,month,close)
+
+snp_df$year = as.Date(snp_df$year,format = "%y",by = "decreasing")
 ```
+
+## ??????
+
 
 ```{r input_data_umploy, message=FALSE}
 umploy_df = read_csv("unemployment.csv") |> 
@@ -55,5 +70,72 @@ umploy_df = read_csv("unemployment.csv") |>
 ```
 
 
+```{r}
+pols_df$year = as.double(pols_df$year)
+snp_df$year = as.double(snp_df$year)
 
+merged_df = pols_df |>
+  left_join(snp_df) |> 
+  left_join(umploy_df)
+
+(merged_df)
+```
+
+
+## Question 2
+```{r}
+mrt_df = read_excel(
+  "202207 Trash Wheel Collection Data.xlsx",
+  cell_cols("A:N"),
+  sheet = "Mr. Trash Wheel") |> 
+  janitor::clean_names() |> 
+  drop_na(dumpster) |> 
+  mutate(homes_1 = weight_tons*500/30,
+         wheel = c("mr"))|> 
+  relocate(wheel,dumpster,year,month) 
+
+range(pull(mrt_df,year))
+```
+
+```{r}
+
+proft_df = read_excel(
+  "202207 Trash Wheel Collection Data.xlsx",
+  range = cell_cols("A:M"),
+  sheet = "Professor Trash Wheel") |> 
+  janitor::clean_names() |> 
+  drop_na(dumpster) |> 
+  mutate(homes_1 = weight_tons*500/30,
+         wheel = c("prof"))|> 
+  relocate(wheel,dumpster,year,month)
+
+range(pull(proft_df,year))
+
+```
+
+
+```{r}
+
+gwyt_df = read_excel(
+  "202207 Trash Wheel Collection Data.xlsx",
+  range = cell_cols("A:K"),
+  sheet = "Gwynnda Trash Wheel") |> 
+  janitor::clean_names() |> 
+  drop_na(dumpster) |> 
+  mutate(homes_powered = weight_tons*500/30,
+         wheel = c("gwy"))|> 
+  relocate(wheel,dumpster,year,month)
+
+range(pull(gwyt_df,year))
+```
+
+
+
+##Question 3
+
+```{r}
+amy_df = read_csv("mci_amyloid.csv")
+
+base_df = read_csv("MCI_baseline.csv")
+```
 
