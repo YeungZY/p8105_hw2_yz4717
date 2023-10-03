@@ -8,7 +8,7 @@ output:
     toc_depth : 2
 ---
 
-```{r import_function}
+```{r import_function, message=FALSE}
 library(tidyverse)
 library(readxl)
 ```
@@ -91,11 +91,12 @@ mrt_df = read_excel(
   sheet = "Mr. Trash Wheel") |> 
   janitor::clean_names() |> 
   drop_na(dumpster) |> 
-  mutate(homes_1 = weight_tons*500/30,
+  mutate(homes_powered = weight_tons*500/30,
          wheel = c("mr"))|> 
-  relocate(wheel,dumpster,year,month) 
+  relocate(wheel,dumpster,year,month) |> 
+  select(-glass_bottles,-grocery_bags,-chip_bags,-sports_balls)
 
-range(pull(mrt_df,year))
+mrt_df$year = as.double(mrt_df$year)
 
 ```
 
@@ -107,11 +108,10 @@ proft_df = read_excel(
   sheet = "Professor Trash Wheel") |> 
   janitor::clean_names() |> 
   drop_na(dumpster) |> 
-  mutate(homes_1 = weight_tons*500/30,
+  mutate(homes_powered = weight_tons*500/30,
          wheel = c("prof"))|> 
-  relocate(wheel,dumpster,year,month)
-
-range(pull(proft_df,year))
+  relocate(wheel,dumpster,year,month) |> 
+  select(-glass_bottles,-grocery_bags,-chip_bags)
 
 ```
 
@@ -126,12 +126,18 @@ gwyt_df = read_excel(
   drop_na(dumpster) |> 
   mutate(homes_powered = weight_tons*500/30,
          wheel = c("gwy"))|> 
-  relocate(wheel,dumpster,year,month)
+  relocate(wheel,dumpster,year,month) |> 
+  select(-plastic_bags)
 
-range(pull(gwyt_df,year))
 ```
 
-
+```{r q2_merged}
+q2_merged = rbind(gwyt_df,mrt_df,proft_df) |> 
+  separate(date,"-",into = c("year1","month1","day")) |> 
+  select(-year1,-month1) |> 
+  relocate(year,month,day) |> 
+  arrange(year,month,day)
+```
 
 ##Question 3
 
