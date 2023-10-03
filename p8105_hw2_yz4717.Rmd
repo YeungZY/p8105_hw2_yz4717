@@ -83,7 +83,7 @@ merged_df = pols_df |>
 
 
 ## Question 2
-```{r}
+```{r input_mrt}
 mrt_df = read_excel(
   "202207 Trash Wheel Collection Data.xlsx",
   cell_cols("A:N"),
@@ -97,7 +97,7 @@ mrt_df = read_excel(
 range(pull(mrt_df,year))
 ```
 
-```{r}
+```{r input_prof}
 
 proft_df = read_excel(
   "202207 Trash Wheel Collection Data.xlsx",
@@ -114,7 +114,7 @@ range(pull(proft_df,year))
 ```
 
 
-```{r}
+```{r input_gwy}
 
 gwyt_df = read_excel(
   "202207 Trash Wheel Collection Data.xlsx",
@@ -133,7 +133,7 @@ range(pull(gwyt_df,year))
 
 ##Question 3
 
-```{r}
+```{r, message=FALSE}
 amy_df = read_csv("mci_amyloid.csv")
 
 base_df = read_csv("MCI_baseline.csv")
