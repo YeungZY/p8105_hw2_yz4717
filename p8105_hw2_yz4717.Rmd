@@ -143,7 +143,7 @@ head(gwyt_df)
 
 ```
 
-The total collection of cigarette butts collected by Gwynnda in July of 2021 is accounts for`r sum(head(gwyt_df,5)$cigarette_butts)`
+The total collection of cigarette butts collected by Gwynnda in July of 2021 is accounts for`r sum(head(gwyt_df,5)$cigarette_butts)` and it can be calculated by 
 
 ```{r Q2_merged}
 q2_merged = bind_rows(gwyt_df,mrt_df,proft_df) |> 
@@ -170,10 +170,20 @@ base_df = read_csv("MCI_baseline.csv",skip = 1) |>
            age_at_onset==".") |> 
   mutate(age_at_onset = ifelse(age_at_onset == ".", NA, age_at_onset))
 
+base_df_ori = read_csv("MCI_baseline.csv",skip = 1) |> 
+  janitor::clean_names()
+
 head(base_df)
 ```
 
-There are some definitions above the whole table in the data of **MCI_baseline**. To get 
+There are some definitions above the whole table in the data of **MCI_baseline**, so when we need to import data into the environment, we need to skip the first row and convert the variables' name into lower case.Then,I recode the variable of "**sex**" and "**apoe4**" as the given definitions showed to obtain a more readable data frame. After that, we have to use "**filter**" to select the observations that meet up our requirements.
+
+As requested, my calculation shows above:
+
+* The size of recruited participants is `r nrow(base_df_ori)`
+* The size of population with **MCI** is `r sum(!is.na(base_df$age_at_onset))`
+* Their average age is `r mean(pull(base_df,current_age))`
+* There are `r sum(base_df$sex =="female" & base_df$apoe4 == "carrier")/sum(base_df$sex == "female")*100`% women who will carry the APOE4.
 
 ```{r Q3_input_amyloid, message=FALSE}
 amy_df = read_csv("mci_amyloid.csv",skip = 1) |> 
@@ -193,7 +203,7 @@ amy_df = read_csv("mci_amyloid.csv",skip = 1) |>
 
 ```
 
-In the data of **amyloid**, we can see a definition is being displayed on the top of document. To make a more tidier version of data frame, we need to skip the first row of this data. After that, I converted all the variables' name into lower case and use "rename()" function to rename the variable "study_id". Then, I reshape the provided data frame from a wider format to a longer format.To get a tidire version of given data, I also change the expression of the specific time node.
+In the data of **mci_amyloid**, we can see a definition is being displayed on the top of document. To make a more tidier version of data frame, we need to skip the first row of this data. After that, I converted all the variables' name into lower case and use "rename()" function to rename the variable "study_id". Then, I reshape the provided data frame from a wider format to a longer format.To get a tidire version of given data, I also change the expression of the specific time node.
 
 ```{r Q3_combine_data}
 q3_only1 = anti_join(base_df,amy_df, by= "id")
@@ -202,4 +212,10 @@ q3_merged_df = inner_join(base_df,amy_df,by = "id")
 ```
 
 The first result of "anti_join" will provide a data frame containing all the rows from **base_df** that do not have matching rows in **amy_df** based on the specified columns used for comparison, and vice versa, the scond one will provide a data frame containing all the rows from **amy_df** that do not have matching rows in **base_df** based on the specified columns used for comparison.
-`r sum(base_df$sex =="female" & base_df$apoe4 == "carrier")/sum(base_df$sex == "female")`
+
+```{r}
+q3_only1 |> head()
+q3_only2 |> head()
+```
+I diplayed part of the result of anti_join. It's clear that some participants appear in only the baseline or amyloid datasets. Due to the limitation of this graph, I opt to show part of the result.Based on my observations from data set,the participants ,appeared in **amyloid only**, have a complete records about their amyloid condition. And people who appeared in **baseline** only tend to be non carrier of APOE4. 
+
