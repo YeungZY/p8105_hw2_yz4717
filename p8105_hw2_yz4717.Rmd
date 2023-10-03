@@ -36,7 +36,7 @@ pols_df = read_csv("pols-month.csv") |>
       "12" ~ "dec")) |> 
   mutate(president = recode(
     prez_gop, "0" = "dem",
-    "1" = "gop", "2" = "gop")) |> 
+    "1" = "gop")) |> 
   select(-prez_gop,-day,-prez_dem)
 
 pols_df|> head()
@@ -62,9 +62,8 @@ snp_df |>
   ) |> 
   arrange(year,month)
 
+snp_df |> head()
 ```
-
-## ??????
 
 
 ```{r input_data_umploy, message=FALSE}
@@ -74,6 +73,7 @@ umploy_df = read_csv("unemployment.csv") |>
                names_to = "month",
                values_to = "umploy")
 
+umploy_df |> head()
 ```
 
 
@@ -85,7 +85,7 @@ merged_df = pols_df |>
   left_join(snp_df) |> 
   left_join(umploy_df)
 
-(merged_df)
+merged_df |> head()
 ```
 
 
@@ -153,20 +153,22 @@ q2_merged = bind_rows(gwyt_df,mrt_df,proft_df) |>
 head(q2_merged)
 ```
 
-##Question 3
+## Question 3
 
 ```{r}
 base_df = read_csv("MCI_baseline.csv",skip = 1) |> 
   janitor::clean_names() |> 
   mutate(sex = case_match(sex,
-                          1~"male",
-                          0~"female"),
+                          1 ~ "male",
+                          0 ~ "female"),
          apoe4 = case_match(apoe4,
-                            1~"carrier",
-                            0~"non_carrier")) |> 
+                            1 ~ "carrier",
+                            0 ~ "non_carrier")) |> 
   filter(current_age < age_at_onset | 
            age_at_onset==".") |> 
   mutate(age_at_onset = ifelse(age_at_onset == ".", NA, age_at_onset))
+
+head(base_df)
 ```
 
 
@@ -179,15 +181,16 @@ amy_df = read_csv("mci_amyloid.csv",skip = 1) |>
                values_to = "value") |> 
   mutate(time = case_match(
     time,
-    "baseline"~0,
-    "time_2"~2,
-    "time_4"~4,
-    "time_6"~6,
-    "time_8"~8
+    "baseline" ~ 0,
+    "time_2" ~ 2,
+    "time_4" ~ 4,
+    "time_6" ~ 6,
+    "time_8" ~ 8
   ))
 
 ```
 
+In the data of **amyloid**, we can see a definition is being displayed on the top of document. To make a more tidier version of data frame, we need to skip the first row of this data. After that, I converted all the variables' name into lower case and use "rename()" function to rename the variable "study_id". Then, I reshape the provided data frame from a wider format to a longer format.To get a tidire version of given data, I also change the expression of the specific time node.
 
 ```{r}
 q3_only1 = anti_join(base_df,amy_df, by= "id")
@@ -195,6 +198,5 @@ q3_only2 = anti_join(amy_df,base_df, by= "id")
 q3_merged_df = inner_join(base_df,amy_df,by = "id")
 ```
 
-In the data of **amyloid**, we can see a definition is being displayed on the top of document. To make a more tidier version of data frame, we need to skip the first row of this data. After that, I converted all the variables'name into lower case and use "rename()" function to rename the variable "study_id". Then, I reshape the provided data frame from a wider format to a longer format.
 The first result of "anti_join" will provide a data frame containing all the rows from **base_df** that do not have matching rows in **amy_df** based on the specified columns used for comparison, and vice versa, the scond one will provide a data frame containing all the rows from **amy_df** that do not have matching rows in **base_df** based on the specified columns used for comparison.
 `r sum(base_df$sex =="female" & base_df$apoe4 == "carrier")/sum(base_df$sex == "female")`
