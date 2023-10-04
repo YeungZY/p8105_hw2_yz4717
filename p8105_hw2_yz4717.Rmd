@@ -134,7 +134,7 @@ head(proft_df)
 In the dataset of `Professor`,there are `r nrow(proft_df)` rows *`r ncol(proft_df)` variables. This data set is focusing on the collection of `Professor` in the time range between`r range(proft_df$year)[1]` and `r range(proft_df$year)[2]`.
 
 * Calculation result :
-In professor's collection data, the total weight of Professor can be calculated by summing up all the weight. So professor's total collection accounts for `r sum(pull(proft_df,weight_tons))` tons and the average is `r mean(proft_df$weight_tons)` tons each day. It also collected `r mean(proft_df$volume_cubic_yards)` cubic yards.
+In `Professor`'s collection data, the total weight of Professor can be calculated by summing up all the weight. So `Professor`'s total collection accounts for `r sum(pull(proft_df,weight_tons))` tons and the average is `r mean(proft_df$weight_tons)` tons each day. It also collected `r mean(proft_df$volume_cubic_yards)` cubic yards.
 
 ```{r Q2_input_gwy}
 
@@ -153,7 +153,7 @@ head(gwyt_df)
 
 ```
 
-The dataset of `Gwynnda` has `r nrow(gwyt_df)` rows *`r ncol(gwyt_df)` variables. This data set is focusing on the collection of `Gwynnda` in the time range between`r range(gwyt_df$year)[1]` and `r range(gwyt_df$year)[2]`.
+The dataset of `Gwynnda` has `r nrow(gwyt_df)` rows *`r ncol(gwyt_df)` variables. This data set is focusing on the collection of `Gwynnda` in the time range between`r range(gwyt_df$year)[1]` and `r range(gwyt_df$year)[2]`. So `Professor`'s total collection accounts for `r sum(pull(gwyt_df,weight_tons))` tons and the average is `r mean(gwyt_df$weight_tons)` tons each day. It also collected `r mean(gwyt_df$volume_cubic_yards)` cubic yards.
 
 * Calculation result :
 The total collection of cigarette butts collected by Gwynnda in July of 2021 is accounts for`r sum(head(gwyt_df,5)$cigarette_butts)`.
@@ -189,7 +189,7 @@ base_df_ori = read_csv("MCI_baseline.csv",skip = 1) |>
 head(base_df)
 ```
 
-There are some definitions above the whole table in the data of **MCI_baseline**, so when we need to import data into the environment, we need to skip the first row and convert the variables' name into lower case.Then,I recode the variable of "**sex**" and "**apoe4**" as the given definitions showed to obtain a more readable data frame. After that, we have to use "**filter**" to select the observations that meet up our requirements.
+There are some definitions above the whole table in the data of **MCI_baseline**, so when we need to import data into the environment, we need to skip the first row and convert the variables' name into lower case. Then,I recoded the variable of "**sex**" and "**apoe4**" as the given definitions showed to obtain a more readable data frame. After that, we have to use "**filter**" to select the observations that meet up our requirements.
 
 As requested, my calculation shows above:
 
