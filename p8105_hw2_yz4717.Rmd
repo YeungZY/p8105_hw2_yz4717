@@ -113,7 +113,7 @@ mrt_df = read_excel(
 
 ```
 
-In question2, I deal with the data which comes from `Mr Trashwheel` at first. First of all, there are `r nrow(mrt_df)` * `r ncol(mrt_df)` variables in this data set. It's clear that each row stand for an observation data within a specific date. And the duration is ranging from `r range(mrt_df$year)[1]` to `
+In question2, I deal with the data which comes from `Mr Trashwheel` at first. First of all, there are `r nrow(mrt_df)` * `r ncol(mrt_df)` variables in this data set. It's clear that each row stand for an observation data within a specific date. And the duration of collection is ranging from `r range(mrt_df$year)[1]` to `r range(mrt_df$year)[2]`. In the given period, `Mr Trashwheel` have collected different kinds of item including plastic bottles, cigarette butts, glass bottles, etc. And the weight and volume of each collection have been recorded, with the average of`r mean(mrt_df$weight_tons)` tons and `r mean(mrt_df$volume_cubic_yards)` cubic yards.
 
 ```{r Q2_input_prof}
 
@@ -131,8 +131,10 @@ proft_df = read_excel(
 head(proft_df)
 ```
 
+In the dataset of `Professor`,there are `r nrow(proft_df)` rows *`r ncol(proft_df)` variables. This data set is focusing on the collection of `Professor` in the time range between`r range(proft_df$year)[1]` and `r range(proft_df$year)[2]`.
+
 * Calculation result :
-In professor's collection data, the total weight of Professor can be calculated by summing up all the weight. So professor's total collection accounts for `r sum(pull(proft_df,weight_tons))` tons. 
+In professor's collection data, the total weight of Professor can be calculated by summing up all the weight. So professor's total collection accounts for `r sum(pull(proft_df,weight_tons))` tons and the average is `r mean(proft_df$weight_tons)` tons each day. It also collected `r mean(proft_df$volume_cubic_yards)` cubic yards.
 
 ```{r Q2_input_gwy}
 
@@ -151,8 +153,10 @@ head(gwyt_df)
 
 ```
 
+The dataset of `Gwynnda` has `r nrow(gwyt_df)` rows *`r ncol(gwyt_df)` variables. This data set is focusing on the collection of `Gwynnda` in the time range between`r range(gwyt_df$year)[1]` and `r range(gwyt_df$year)[2]`.
+
 * Calculation result :
-The total collection of cigarette butts collected by Gwynnda in July of 2021 is accounts for`r sum(head(gwyt_df,5)$cigarette_butts)` and it can be calculated by 
+The total collection of cigarette butts collected by Gwynnda in July of 2021 is accounts for`r sum(head(gwyt_df,5)$cigarette_butts)`.
 
 ```{r Q2_merged}
 q2_merged = bind_rows(gwyt_df,mrt_df,proft_df) |> 
@@ -222,7 +226,7 @@ q3_merged_df = inner_join(base_df,amy_df,by = "id")
 
 The first result of "anti_join" will provide a data frame containing all the rows from **base_df** that do not have matching rows in **amy_df** based on the specified columns used for comparison, and vice versa, the scond one will provide a data frame containing all the rows from **amy_df** that do not have matching rows in **base_df** based on the specified columns used for comparison.
 
-```{r}
+```{r Q3_show_antijoin}
 q3_only1 |> head()
 q3_only2 |> head()
 ```
