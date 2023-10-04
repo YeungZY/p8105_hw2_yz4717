@@ -219,8 +219,8 @@ amy_df = read_csv("mci_amyloid.csv",skip = 1) |>
 In the data of **mci_amyloid**, we can see a definition is being displayed on the top of document. To make a more tidier version of data frame, we need to skip the first row of this data. After that, I converted all the variables' name into lower case and use "rename()" function to rename the variable "study_id". Then, I reshape the provided data frame from a wider format to a longer format.To get a tidier version of given data, I also change the expression of the specific time node transfring it into numeric lable.
 
 ```{r Q3_combine_data}
-q3_only1 = anti_join(base_df,amy_df, by= "id")
-q3_only2 = anti_join(amy_df,base_df, by= "id")
+q3_only1 = anti_join(base_df,amy_df, by= "id") |> write_csv("appear_only_baseline.csv")
+q3_only2 = anti_join(amy_df,base_df, by= "id") |> write_csv("appear_only_amyloid.csv")
 q3_merged_df = inner_join(base_df,amy_df,by = "id")
 ```
 
