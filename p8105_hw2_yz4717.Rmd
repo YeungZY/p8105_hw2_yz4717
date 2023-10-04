@@ -194,9 +194,9 @@ There are some definitions above the whole table in the data of **MCI_baseline**
 As requested, my calculation shows above:
 
 * The size of recruited participants is `r nrow(base_df_ori)`
-* The size of population with **MCI** is `r sum(!is.na(base_df$age_at_onset))`
+* The size of population with **MCI** is `r nrow(base_df)`
 * Their average age is `r mean(pull(base_df,current_age))`
-* There are `r sum(base_df$sex =="female" & base_df$apoe4 == "carrier")/sum(base_df$sex == "female")*100`% women who will carry the APOE4.
+* There are `r sum(base_df$sex =="female" & base_df$apoe4 == "carrier")/sum(base_df$sex == "female")*100`% women in the study who will carry the APOE4.
 
 ```{r Q3_input_amyloid, message=FALSE}
 amy_df = read_csv("mci_amyloid.csv",skip = 1) |> 
