@@ -18,7 +18,7 @@ library(readxl)
 # Question 1
 
 ```{r Q1_input_pols}
-pols_df = read_csv("pols-month.csv") |> 
+pols_df = read_csv("data/fivethirtyeight_datasets/pols-month.csv") |> 
   janitor::clean_names() |> 
   separate(mon, "-",into = c("year","month","day")) |> 
   mutate(
@@ -50,7 +50,7 @@ The `pols` contains `r nrow(pols_df)` * `r ncol(pols_df)` data, which provides i
 
 ```{r Q1_input_snp,message=FALSE}
 
-snp_df = read_csv("snp.csv",
+snp_df = read_csv("data/fivethirtyeight_datasets/snp.csv",
                   col_types = cols(Date = col_date(format = "%m/%d/%y"))) |> 
   janitor::clean_names() |> 
   separate(date,"/",into=c("month","day","year"))|> 
@@ -70,7 +70,7 @@ snp_df |> head()
 Then, I also cleaned the `snp` data which contains the data comes from Standard & Poor’s stock market index. To prepare for the combination, the format of year should be converted into `double` so as to match the variable in others' data frame. According to my observations, `snp` data has `r nrow(snp_df)` observations and `r ncol(snp_df)` variables that ranging from `r range(snp_df$year)[1]` to `r range(snp_df$year)[2]`. 
 
 ```{r Q1_input_umploy, message=FALSE}
-umeploy_df = read_csv("unemployment.csv") |> 
+umeploy_df = read_csv("data/fivethirtyeight_datasets/unemployment.csv") |> 
   janitor::clean_names() |> 
   pivot_longer(jan:dec,
                names_to = "month",
@@ -101,7 +101,7 @@ To make sure the variable `year` can match perfectly, I converted its format int
 ```{r Q2_input_mrt}
 
 mrt_df = read_excel(
-    "202309 Trash Wheel Collection Data.xlsx",
+    "data/202309 Trash Wheel Collection Data.xlsx",
   cell_cols("A:N"),
   sheet = "Mr. Trash Wheel") |> 
   janitor::clean_names() |> 
@@ -118,7 +118,7 @@ In question2, I deal with the data which comes from `Mr Trashwheel` at first. Fi
 ```{r Q2_input_prof}
 
 proft_df = read_excel(
-  "202309 Trash Wheel Collection Data.xlsx",
+  "data/202309 Trash Wheel Collection Data.xlsx",
   range = cell_cols("A:M"),
   sheet = "Professor Trash Wheel") |> 
   janitor::clean_names() |> 
@@ -139,7 +139,7 @@ In `Professor`'s collection data, the total weight of Professor can be calculate
 ```{r Q2_input_gwy}
 
 gwyt_df = read_excel(
-  "202309 Trash Wheel Collection Data.xlsx",
+  "data/202309 Trash Wheel Collection Data.xlsx",
   range = cell_cols("A:K"),
   sheet = "Gwynnda Trash Wheel") |> 
   janitor::clean_names() |> 
@@ -171,7 +171,7 @@ head(q2_merged)
 # Question 3
 
 ```{r Q3_inut_baseline}
-base_df = read_csv("MCI_baseline.csv",skip = 1) |> 
+base_df = read_csv("data/data_mci/MCI_baseline.csv",skip = 1) |> 
   janitor::clean_names() |> 
   mutate(sex = case_match(sex,
                           1 ~ "male",
@@ -199,7 +199,7 @@ As requested, my calculation shows above:
 * There are `r sum(base_df$sex =="female" & base_df$apoe4 == "carrier")/sum(base_df$sex == "female")*100`% women in the study who will carry the APOE4.
 
 ```{r Q3_input_amyloid, message=FALSE}
-amy_df = read_csv("mci_amyloid.csv",skip = 1) |> 
+amy_df = read_csv("data/data_mci/mci_amyloid.csv",skip = 1) |> 
   janitor::clean_names() |> 
   rename("id" = "study_id") |> 
   pivot_longer(baseline:time_8,
