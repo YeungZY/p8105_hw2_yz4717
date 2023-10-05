@@ -131,7 +131,7 @@ proft_df = read_excel(
 head(proft_df)
 ```
 
-In the dataset of `Professor`,there are `r nrow(proft_df)` rows *`r ncol(proft_df)` variables. This data set is focusing on the collection of `Professor` in the time range between`r range(proft_df$year)[1]` and `r range(proft_df$year)[2]`.
+In the dataset of `Professor`,there are `r nrow(proft_df)` rows *`r ncol(proft_df)` variables. This data set is focusing on the collection of `Professor` in the time range between `r range(proft_df$year)[1]` and `r range(proft_df$year)[2]`.
 
 * Calculation result :
 In `Professor`'s collection data, the total weight of Professor can be calculated by summing up all the weight. So `Professor`'s total collection accounts for `r sum(pull(proft_df,weight_tons))` tons and the average is `r mean(proft_df$weight_tons)` tons each day. It also collected `r mean(proft_df$volume_cubic_yards)` cubic yards.
@@ -224,7 +224,9 @@ q3_only2 = anti_join(amy_df,base_df, by= "id")
 q3_merged_df = inner_join(base_df,amy_df,by = "id") |> write_csv("combined.csv")
 ```
 
-The first result of "anti_join" will provide a data frame containing all the rows from **base_df** that do not have matching rows in **amy_df** based on the specified columns used for comparison, and vice versa, the scond one will provide a data frame containing all the rows from **amy_df** that do not have matching rows in **base_df** based on the specified columns used for comparison.
+The first result of "anti_join" will provide a data frame containing all the rows from **base_df** that do not have matching rows in **amy_df** based on the specified columns used for comparison, and vice versa, the scond one will provide a data frame containing all the rows from **amy_df** that do not have matching rows in **base_df** based on the specified columns used for comparison. 
+
+Also, as question mentioned, I save the result of `inner_join`. 
 
 ```{r Q3_show_antijoin}
 q3_only1 |> head()
