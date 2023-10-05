@@ -221,7 +221,7 @@ In the data of **mci_amyloid**, we can see a definition is being displayed on th
 ```{r Q3_combine_data}
 q3_only1 = anti_join(base_df,amy_df, by= "id")
 q3_only2 = anti_join(amy_df,base_df, by= "id") 
-q3_merged_df = inner_join(base_df,amy_df,by = "id") |> write_csv("combined.csv")
+q3_merged_df = inner_join(base_df,amy_df,by = "id") |> write_csv("data/data_mci/combined.csv")
 ```
 
 The first result of "anti_join" will provide a data frame containing all the rows from **base_df** that do not have matching rows in **amy_df** based on the specified columns used for comparison, and vice versa, the scond one will provide a data frame containing all the rows from **amy_df** that do not have matching rows in **base_df** based on the specified columns used for comparison. 
