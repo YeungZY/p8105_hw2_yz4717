@@ -8,7 +8,7 @@ output:
     toc_depth : 2
 ---
 
-First of all, I import all the needed packages into the environment and set message = FALSE to avoid receiving the unneccessary messages.
+First of all, I import all the needed packages into the environment and set message = FALSE to avoid receiving the unnecessary messages.
 
 ```{r import_function, message=FALSE}
 library(tidyverse)
